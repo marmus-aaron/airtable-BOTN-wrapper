@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sips & Trips Exit Survey</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; margin-top: 5em; }
+    h1 { margin-bottom: 1.5em; }
+    .btn {
+      display: block;
+      width: 250px;
+      padding: 1.5em;
+      margin: 1em auto;
+      font-size: 1.4em;
+      font-weight: bold;
+      border: none;
+      border-radius: 1em;
+      cursor: pointer;
+      color: white;
+      transition: box-shadow 0.1s;
+    }
+    .btn-yes { background: #2ecc40; }
+    .btn-maybe { background: #ffce00; color: #222; }
+    .btn-no { background: #e74c3c; }
+    .btn:active { box-shadow: 0 0 8px #aaa; }
+    .thanks { margin-top: 2em; font-size: 1.2em; color: #2ecc40; }
+    .error { margin-top: 2em; color: #e74c3c; }
+  </style>
+</head>
+<body>
+  <h1>Sips & Trips Exit Survey</h1>
+  <p>Did this event make you feel like a part of the Maritime community?</p>
+  <button class="btn btn-yes" onclick="submitAnswer('Yes')">Yes</button>
+  <button class="btn btn-maybe" onclick="submitAnswer('Maybe')">Maybe</button>
+  <button class="btn btn-no" onclick="submitAnswer('No')">No</button>
+  <div id="message"></div>
+  <script>
+    // You should rotate this token after testing or move it to a backend for production!
+    const API_TOKEN = 'patCE7dCrNxtbWt6C.0abc4eef80328804c70ebdfb45f2b7ffdcca4ae585c26de3852fa3d355c02d64';
+    const BASE_ID = 'appxewYsxnopKSMF';
+    const TABLE_NAME = 'Table 1';
+    const FIELD = 'Maritime Community';
+
+    function submitAnswer(answer) {
+      fetch(`https://api.airtable.com/v0/${BASE_ID}/${encodeURIComponent(TABLE_NAME)}`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${API_TOKEN}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ fields: { [FIELD]: answer } })
+      })
+      .then(response => {
+        if (!response.ok) throw new Error('Network response was not ok');
+        return response.json();
+      })
+      .then(data => {
+        document.getElementById('message').innerHTML = `<div class="thanks">Thanks for your feedback!</div>`;
+      })
+      .catch(err => {
+        document.getElementById('message').innerHTML = `<div class="error">Submission failed. Please try again.</div>`;
+      });
+    }
+  </script>
+</body>
+</html>
