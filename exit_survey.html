@@ -4,27 +4,54 @@
   <meta charset="UTF-8">
   <title>Sips & Trips Exit Survey</title>
   <style>
-    body { font-family: sans-serif; text-align: center; margin-top: 5em; }
-    h1 { margin-bottom: 1.5em; }
+    body { 
+      font-family: sans-serif; 
+      text-align: center; 
+      margin-top: 5em; 
+      background: #fff;
+    }
+    h1 { 
+      margin-bottom: 1.5em; 
+      font-size: 2.4em;
+      font-weight: bold;
+    }
+    p {
+      font-size: 1.1em;
+      margin-bottom: 2em;
+    }
     .btn {
       display: block;
-      width: 250px;
+      width: 300px;
       padding: 1.5em;
-      margin: 1em auto;
-      font-size: 1.4em;
+      margin: 1.5em auto;
+      font-size: 1.5em;
       font-weight: bold;
       border: none;
-      border-radius: 1em;
+      border-radius: 2em;
       cursor: pointer;
       color: white;
-      transition: box-shadow 0.1s;
+      box-shadow: 0 2px 10px #eee;
+      transition: box-shadow 0.2s, transform 0.2s;
+      outline: none;
     }
     .btn-yes { background: #2ecc40; }
     .btn-maybe { background: #ffce00; color: #222; }
-    .btn-no { background: #e74c3c; }
-    .btn:active { box-shadow: 0 0 8px #aaa; }
-    .thanks { margin-top: 2em; font-size: 1.2em; color: #2ecc40; }
-    .error { margin-top: 2em; color: #e74c3c; }
+    .btn-no { background: #e74c3c; border: 2px solid #333; }
+    .btn:active { 
+      box-shadow: 0 4px 20px #bbb;
+      transform: scale(0.98);
+    }
+    .thanks { 
+      margin-top: 2em; 
+      font-size: 1.2em; 
+      color: #2ecc40; 
+      font-weight: bold;
+    }
+    .error { 
+      margin-top: 2em; 
+      color: #e74c3c; 
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -35,22 +62,22 @@
   <button class="btn btn-no" onclick="submitAnswer('No')">No</button>
   <div id="message"></div>
   <script>
-    // You should rotate this token after testing or move it to a backend for production!
-    const API_TOKEN = 'patCE7dCrNxtbWt6C.0abc4eef80328804c70ebdfb45f2b7ffdcca4ae585c26de3852fa3d355c02d64';
-    const BASE_ID = 'appxewYsxnopKSMF';
-    const TABLE_NAME = 'Table 1';
     const FIELD = 'Maritime Community';
+    const ENDPOINT = 'https://sipstrips25exitsurvey.astone-801.workers.dev/';
 
     function submitAnswer(answer) {
-      fetch(`https://api.airtable.com/v0/${BASE_ID}/${encodeURIComponent(TABLE_NAME)}`, {
+      // Clear any previous message
+      document.getElementById('message').innerHTML = '';
+      // Disable buttons while submitting
+      setButtonsDisabled(true);
+
+      fetch(ENDPOINT, {
         method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${API_TOKEN}`,
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ fields: { [FIELD]: answer } })
       })
       .then(response => {
+        setButtonsDisabled(false);
         if (!response.ok) throw new Error('Network response was not ok');
         return response.json();
       })
@@ -61,6 +88,6 @@
         document.getElementById('message').innerHTML = `<div class="error">Submission failed. Please try again.</div>`;
       });
     }
-  </script>
-</body>
-</html>
+
+    function setButtonsDisabled(disabled) {
+      document.querySelectorA
